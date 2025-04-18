@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome zu Arbeit Web{% endblock %}
+
+{% block bodyname %}<h4>Web page - Report is still under cinstraction. During process ... </h4>{% endblock %}
+{% block bodytext %}<h2>--  -- </h2>
+
+<div>
+    {% for el in companyname %}
+        <p>{{ el.companyname }}</p>
+        <p>{{ el.all_events }}</p>
+        <p>{{ "---------------------------" }}</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

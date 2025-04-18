@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'  
-# Updated initialization pattern for version 3.x
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -19,6 +18,7 @@ class Company(db.Model):
     detail = db.Column(db.String(1000), nullable=True)
     status = db.Column(db.String(500), nullable=True)
     transport = db.Column(db.String(500), nullable=True)
+    all_events = db.Column(db.Text, nullable=True)
     
     def __repr__(self):
         return '<Company %r>' % self.id
@@ -40,10 +40,34 @@ def user(name, id):
 def base():
     return render_template("base.html")
 
-@app.route('/add-company', methods=['POST','GET'])
+@app.route('/ups')
+def ups():
+    return render_template("ups.html")
+
+@app.route('/error')
+def error_page():
+    # Get the error message from the query parameter
+    error_message = request.args.get('error_message', '')
+    
+    # Pass error message to errors.html template
+    return render_template("errors/errors.html", error_message=error_message)
+
+@app.route('/report')
+def report():
+    companyname = Company.query.order_by(Company.all_events).all();
+    return render_template("report.html", companyname=companyname)
+
+@app.route('/add-company', methods=['POST', 'GET'])
 def add_company():
     if request.method == "POST":
         companyname = request.form['companyname']
+        
+        # Check if company name is empty
+        if not companyname.strip():
+            # If empty, redirect to the error page with an error message
+            error_message = "Company name cannot be empty"
+            return redirect(url_for('error_page', error_message=error_message))
+        
         stadt = request.form['stadt']
         
         # Convert index_stadt to integer or None if empty
@@ -66,6 +90,7 @@ def add_company():
         
         status = request.form['status']
         transport = request.form['transport']
+        all_events = request.form['all_events']
         
         # Create company object with proper types
         company = Company(
@@ -77,7 +102,8 @@ def add_company():
             date_gekommen=date_gekommen, 
             date_email=date_email, 
             status=status,
-            transport=transport
+            transport=transport,
+            all_events=all_events
         )
         
         try:
@@ -87,7 +113,8 @@ def add_company():
         except Exception as e:
             # Print the error for debugging
             print(f"Error occurred: {e}")
-            return f"An error occurred: {e}"
+            #return f"An error occurred: {e}"
+            return redirect('/ups')
         
     else:
         return render_template("add-company.html")
