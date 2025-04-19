@@ -54,8 +54,8 @@ def error_page():
 
 @app.route('/report')
 def report():
-    companyname = Company.query.order_by(Company.all_events).all();
-    return render_template("report.html", companyname=companyname)
+    collection_data = Company.query.order_by(Company.all_events).all();
+    return render_template("report.html", db_data = collection_data)
 
 @app.route('/add-company', methods=['POST', 'GET'])
 def add_company():

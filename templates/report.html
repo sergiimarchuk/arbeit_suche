@@ -2,14 +2,23 @@
 
 {% block title %}Welcome zu Arbeit Web{% endblock %}
 
-{% block bodyname %}<h4>Web page - Report is still under cinstraction. During process ... </h4>{% endblock %}
-{% block bodytext %}<h2>--  -- </h2>
+{% block bodyname %}<h4>Web page - Report is still under construaction. During process ... </h4>{% endblock %}
+{% block bodytext %}<h5></h5>
 
 <div>
-    {% for el in companyname %}
-        <p>{{ el.companyname }}</p>
-        <p>{{ el.all_events }}</p>
-        <p>{{ "---------------------------" }}</p>
+    {% for el in db_data %}
+            <p><strong>Company Name:</strong> {{ el.companyname }}</p>
+            <p><strong>City (Stadt):</strong> {{ el.stadt }}</p>
+            <p><strong>Postal Code (Index Stadt):</strong> {{ el.index_stadt or 'N/A' }}</p>
+            <p><strong>Street (Strasse):</strong> {{ el.strasse }}</p>
+            <p><strong>ORT:</strong> {{ el.ort or 'N/A' }}</p>
+            <p><strong>Date Received:</strong> {{ el.date_gekommen.strftime('%Y-%m-%d') if el.date_gekommen else 'N/A' }}</p>
+            <p><strong>Date Email:</strong> {{ el.date_email.strftime('%Y-%m-%d') if el.date_email else 'N/A' }}</p>
+            <p><strong>Detail:</strong> {{ el.detail or 'N/A' }}</p>
+            <p><strong>Status:</strong> {{ el.status or 'N/A' }}</p>
+            <p><strong>Transport:</strong> {{ el.transport or 'N/A' }}</p>
+            <p><strong>All Events:</strong> {{ el.all_events or 'N/A' }}</p>
+            <p style="border-bottom: 1px solid #ccc; margin: 15px 0;"></p>
     {% endfor %}
 </div>
 
